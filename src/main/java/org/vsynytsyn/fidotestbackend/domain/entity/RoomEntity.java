@@ -1,6 +1,9 @@
 package org.vsynytsyn.fidotestbackend.domain.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -8,6 +11,9 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "rooms")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RoomEntity {
 
     @Id

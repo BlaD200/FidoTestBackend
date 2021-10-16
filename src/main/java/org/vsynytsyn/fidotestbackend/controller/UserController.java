@@ -34,7 +34,7 @@ public class UserController {
     }
 
 
-    @PutMapping("/")
+    @PostMapping("/")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserEntity> createUser(@Valid @RequestBody UserDTO userDTO) {
         try {
