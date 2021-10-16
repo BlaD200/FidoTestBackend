@@ -1,9 +1,11 @@
-package org.vsynytsyn.fidotestbackend.entity;
+package org.vsynytsyn.fidotestbackend.domain.entity;
 
+import lombok.Data;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 
+@Data
 @Entity
 @Table(name = "rooms")
 public class RoomEntity {

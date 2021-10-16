@@ -1,11 +1,16 @@
-package org.vsynytsyn.fidotestbackend.entity;
+package org.vsynytsyn.fidotestbackend.domain.entity;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
+import java.util.Set;
 
+@Data
 @Entity
 @Table(name="users")
+@EqualsAndHashCode(of = {"id"})
 public class UserEntity {
 
     @Id
@@ -22,4 +27,12 @@ public class UserEntity {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = { @JoinColumn(name = "user_id")},
+            inverseJoinColumns = { @JoinColumn(name = "role_id") }
+    )
+    private Set<Role> roles;
 }
