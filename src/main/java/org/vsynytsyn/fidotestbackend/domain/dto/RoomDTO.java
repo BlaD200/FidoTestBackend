@@ -20,7 +20,6 @@ public class RoomDTO {
     @Size(max = 256, message = "Room location length must be less than 256")
     private String location;
     @NotNull
-    @NotBlank
     @Max(value = 100, message = "Seats count can be 100 max")
     private Integer seatsCount;
 }

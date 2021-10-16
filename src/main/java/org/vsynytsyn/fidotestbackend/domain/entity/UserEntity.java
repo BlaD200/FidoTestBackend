@@ -1,5 +1,6 @@
 package org.vsynytsyn.fidotestbackend.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
@@ -13,6 +14,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"bookings"})
 public class UserEntity {
 
     @Id
@@ -37,4 +39,8 @@ public class UserEntity {
             inverseJoinColumns = { @JoinColumn(name = "role_id") }
     )
     private Set<Role> roles;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<BookingEntity> bookings;
 }

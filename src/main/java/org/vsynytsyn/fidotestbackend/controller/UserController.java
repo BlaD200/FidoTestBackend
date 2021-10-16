@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.vsynytsyn.fidotestbackend.controller.dto.ErrorMessage;
 import org.vsynytsyn.fidotestbackend.domain.dto.UserDTO;
 import org.vsynytsyn.fidotestbackend.domain.entity.UserEntity;
 import org.vsynytsyn.fidotestbackend.security.user.UserPrincipal;
@@ -28,7 +29,7 @@ public class UserController {
 
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<UserEntity> getUserById(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.of(userService.getUserById(id));
     }
@@ -36,19 +37,19 @@ public class UserController {
 
     @PostMapping("/")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserEntity> createUser(@Valid @RequestBody UserDTO userDTO) {
+    public ResponseEntity<Object> createUser(@Valid @RequestBody UserDTO userDTO) {
         try {
             UserEntity user = userService.createUser(userDTO);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorMessage(e.getMessage()));
         }
     }
 
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity deleteUser(
+    public ResponseEntity<Object> deleteUser(
             @PathVariable(name = "id") Long userId,
             @AuthenticationPrincipal UserPrincipal currentUser
     ) {
@@ -58,7 +59,7 @@ public class UserController {
         } catch (EmptyResultDataAccessException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorMessage(e.getMessage()));
         }
     }
 }

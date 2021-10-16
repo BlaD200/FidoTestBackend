@@ -1,12 +1,11 @@
 package org.vsynytsyn.fidotestbackend.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @Entity
@@ -14,6 +13,8 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = {"id", "name"})
+@ToString(exclude = {"bookings"})
 public class RoomEntity {
 
     @Id
@@ -30,4 +31,8 @@ public class RoomEntity {
 
     @Column(name = "seats_count", nullable = false)
     private Integer seatsCount;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<BookingEntity> bookings;
 }

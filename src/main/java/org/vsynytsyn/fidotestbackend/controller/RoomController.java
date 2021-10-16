@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.vsynytsyn.fidotestbackend.controller.dto.ErrorMessage;
 import org.vsynytsyn.fidotestbackend.domain.dto.RoomDTO;
 import org.vsynytsyn.fidotestbackend.domain.entity.RoomEntity;
 import org.vsynytsyn.fidotestbackend.service.RoomService;
@@ -23,7 +24,7 @@ public class RoomController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<RoomDTO> getById(@PathVariable(name = "id") Long roomId){
         return ResponseEntity.of(roomService.getById(roomId));
     }
@@ -31,18 +32,18 @@ public class RoomController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RoomEntity> createRoom(@Valid @RequestBody RoomDTO roomDTO) {
+    public ResponseEntity<Object> createRoom(@Valid @RequestBody RoomDTO roomDTO) {
         try {
             RoomEntity room = roomService.createRoom(roomDTO);
             return ResponseEntity.ok(room);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorMessage(e.getMessage()));
         }
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity deleteRoom(
+    public ResponseEntity<Object> deleteRoom(
             @PathVariable(name = "id") Long roomId
     ) {
         try {
