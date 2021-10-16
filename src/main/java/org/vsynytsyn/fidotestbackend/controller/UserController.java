@@ -1,11 +1,15 @@
 package org.vsynytsyn.fidotestbackend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.vsynytsyn.fidotestbackend.domain.dto.UserDTO;
 import org.vsynytsyn.fidotestbackend.domain.entity.UserEntity;
+import org.vsynytsyn.fidotestbackend.security.user.UserPrincipal;
 import org.vsynytsyn.fidotestbackend.service.UserService;
 
 import javax.validation.Valid;
@@ -29,9 +33,32 @@ public class UserController {
         return ResponseEntity.of(userService.getUserById(id));
     }
 
-    @PostMapping("/create")
+
+    @PutMapping("/")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserEntity> createUser(@Valid @RequestBody UserDTO userDTO){
-        return ResponseEntity.ok(null);
+    public ResponseEntity<UserEntity> createUser(@Valid @RequestBody UserDTO userDTO) {
+        try {
+            UserEntity user = userService.createUser(userDTO);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity deleteUser(
+            @PathVariable(name = "id") Long userId,
+            @AuthenticationPrincipal UserPrincipal currentUser
+    ) {
+        try {
+            userService.deleteUser(userId, currentUser);
+            return ResponseEntity.ok().build();
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 }

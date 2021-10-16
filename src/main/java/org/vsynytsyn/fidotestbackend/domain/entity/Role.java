@@ -1,9 +1,7 @@
 package org.vsynytsyn.fidotestbackend.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -14,6 +12,9 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(of = {"roleId"})
 @ToString(of = {"roleId", "role"})
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
